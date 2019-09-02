@@ -3,7 +3,9 @@ package com.ras.soc;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.tomcat.util.http.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +41,18 @@ public class OwnerController
 		return ownerRepo.findAll();
 	}
 	
+	@GetMapping("/owner/{id}")
+	public Optional<Owner> getOwner(@PathVariable Integer id)
+	{
+		return ownerRepo.findById(id);
+			
+	}
 	
 	@PostMapping("/owner")
 	public ResponseEntity<Owner> createOwner(@RequestBody Owner owner) throws URISyntaxException {
-		if (owner.getId() != null) {
+		
+		System.out.println(owner);
+		if (owner.getId() != 0) {
 		logger.error("unable to create user with name {} already exists",owner.getFirstname());
 		return new ResponseEntity(new CustomErrorType("user with id " + owner.getId() + " already exists"),HttpStatus.CONFLICT);
 		} 
@@ -51,18 +61,25 @@ public class OwnerController
 					.body(result);
 	}
 	
-	@PutMapping("/owner")
-	public ResponseEntity<Owner> updateOwner(Owner owner)
+	
+	//@RequestMapping(value = "/owner/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	//@PutMapping("/owner")
+	@RequestMapping(value = "/owner/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Owner> updateOwner(@PathVariable("id") Integer id, @RequestBody Owner owner)
 	{
-		if(owner.getId() == null)
+		if(owner.getId() == 0)
 		{
 			logger.error("unable to  update user with id {} not found ",owner.getId());
 		}
+		System.out.println(owner);
+		
 		
 		 Owner result = ownerRepo.save(owner);
 	        return ResponseEntity.ok()
 	   	            .body(result);
 	}
+	
+	
 	@RequestMapping(value = "/getmessage", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody Message getMessage() {
 		logger.info("Accessing protected resource");

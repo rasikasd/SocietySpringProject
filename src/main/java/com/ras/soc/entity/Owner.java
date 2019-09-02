@@ -10,18 +10,20 @@ public class Owner
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private Integer id;
 	private String firstname;
 	private String lastname;
+	private String flatno;
+	
 	
 	public Owner() 
 	{
 		
 	}
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getFirstname() {
@@ -37,6 +39,15 @@ public class Owner
 		this.lastname = lastname;
 	}
 	
-	
+	public String getFlatno() {
+		return flatno;
+	}
+	public void setFlatno(String flatno) {
+		this.flatno = flatno;
+	}
+	@Override
+	public String toString() {
+		return "Owner [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", flatno=" + flatno + "]";
+	}
 	
 }

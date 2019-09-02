@@ -30,7 +30,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		// @formatter:off
 		auth.inMemoryAuthentication()
-			.withUser("roy")
+			.withUser("sdl")
 				.password("{noop}spring")
 				.roles("USER");
 		// @formatter:on
