@@ -38,7 +38,12 @@ public class OwnerController
 	@GetMapping("/all")
 	public List<Owner> getOwners()
 	{
-		return ownerRepo.findAll();
+		List<Owner>owners = ownerRepo.findAll();
+		Long totalowners = ownerRepo.count();
+		System.out.println(totalowners);
+		//for(Owner o : owners){			System.out.println(o);	}
+		
+		return owners;
 	}
 	
 	@GetMapping("/owner/{id}")
@@ -70,13 +75,19 @@ public class OwnerController
 		if(owner.getId() == 0)
 		{
 			logger.error("unable to  update user with id {} not found ",owner.getId());
+			 return ResponseEntity.notFound().build();
 		}
+		else
+		{
 		System.out.println(owner);
 		
 		
 		 Owner result = ownerRepo.save(owner);
+		
 	        return ResponseEntity.ok()
 	   	            .body(result);
+	        
+		}
 	}
 	
 	
@@ -91,4 +102,6 @@ public class OwnerController
 		logger.info("Accessing protected resource");
 		return new Message(100, "hi!", "new rest .");
 	}	
+	
+	
 }
