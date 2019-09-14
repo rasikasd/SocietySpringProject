@@ -1,7 +1,7 @@
 package com.ras.soc.entity;
 
-import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,39 +21,64 @@ public class Receipt {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer	rcpt_id;
+	private Integer	id;
 	
-	private BigDecimal paid_amt;
+	private Float paidamt;
 	
-	private Instant rcptdate;
+	private Date rcptdate;
+	
+	private String paymenttype;
+	
+	private String paymentdetail;
 	
 	@ManyToOne
 	@JoinColumn
 	@JsonIgnore
 	private Owner owner;
 
-	public Integer getRcpt_id() {
-		return rcpt_id;
+	@ManyToOne
+	@JoinColumn
+	@JsonIgnore
+	private Bill bill;
+
+	public Integer getId() {
+		return id;
 	}
 
-	public void setRcpt_id(Integer rcpt_id) {
-		this.rcpt_id = rcpt_id;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public BigDecimal getPaid_amt() {
-		return paid_amt;
+	public Float getPaidamt() {
+		return paidamt;
 	}
 
-	public void setPaid_amt(BigDecimal paid_amt) {
-		this.paid_amt = paid_amt;
+	public void setPaidamt(Float paidamt) {
+		this.paidamt = paidamt;
 	}
 
-	public Instant getRcptdate() {
+	public Date getRcptdate() {
 		return rcptdate;
 	}
 
-	public void setRcptdate(Instant rcptdate) {
+	public void setRcptdate(Date rcptdate) {
 		this.rcptdate = rcptdate;
+	}
+
+	public String getPaymenttype() {
+		return paymenttype;
+	}
+
+	public void setPaymenttype(String paymenttype) {
+		this.paymenttype = paymenttype;
+	}
+
+	public String getPaymentdetail() {
+		return paymentdetail;
+	}
+
+	public void setPaymentdetail(String paymentdetail) {
+		this.paymentdetail = paymentdetail;
 	}
 
 	public Owner getOwner() {
@@ -64,12 +89,20 @@ public class Receipt {
 		this.owner = owner;
 	}
 
+	public Bill getBill() {
+		return bill;
+	}
+
+	public void setBill(Bill bill) {
+		this.bill = bill;
+	}
+
 	@Override
 	public String toString() {
-		return "Receipt [rcpt_id=" + rcpt_id + ", paid_amt=" + paid_amt + ", rcptdate=" + rcptdate + ", owner=" + owner
-				+ ", getRcpt_id()=" + getRcpt_id() + ", getPaid_amt()=" + getPaid_amt() + ", getRcptdate()="
-				+ getRcptdate() + ", getOwner()=" + getOwner() + "]";
+		return "Receipt [id=" + id + ", paidamt=" + paidamt + ", rcptdate=" + rcptdate + ", paymenttype=" + paymenttype
+				+ ", paymentdetail=" + paymentdetail + ", owner=" + owner + ", bill=" + bill + "]";
 	}
+
 	
 	
 	

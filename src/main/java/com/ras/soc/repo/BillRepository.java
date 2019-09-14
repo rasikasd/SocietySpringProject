@@ -7,5 +7,7 @@ import com.ras.soc.entity.Bill;
 
 public interface BillRepository extends JpaRepository<Bill, Integer>{
 
+	public Bill findByOwnerId(Integer id);
+
 	
 }

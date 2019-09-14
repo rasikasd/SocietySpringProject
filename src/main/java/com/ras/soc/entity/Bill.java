@@ -1,16 +1,18 @@
 package com.ras.soc.entity;
 
-import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,20 +26,24 @@ public class Bill {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	private BigDecimal billamount;
-	private BigDecimal prevbillamt;
-	private BigDecimal payment;
-	private BigDecimal adjustment;
-	private BigDecimal currcharges;
-	private BigDecimal totalamt;
-	private Instant billdate;
-	private Instant duedate;
+	private Float billamount;
+	private Float prevbillamt;
+	private Float payment;
+	private Float adjustment;
+	private Float currcharges;
+	private Float totalamt;
+	
+	private Date billdate;
+	private Date duedate;
 	
 	
 	@ManyToOne
 	@JoinColumn
 	@JsonIgnore
 	private Owner owner;
+	
+	@OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
+	private Set<Receipt> receipts = new HashSet<>();
 
 
 	public Integer getId() {
@@ -50,82 +56,85 @@ public class Bill {
 	}
 
 
-	public BigDecimal getBillamount() {
+	public Float getBillamount() {
 		return billamount;
 	}
 
 
-	public void setBillamount(BigDecimal billamount) {
+	public void setBillamount(Float billamount) {
 		this.billamount = billamount;
 	}
 
 
-	public BigDecimal getPrevbillamt() {
+	public Float getPrevbillamt() {
 		return prevbillamt;
 	}
 
 
-	public void setPrevbillamt(BigDecimal prevbillamt) {
+	public void setPrevbillamt(Float prevbillamt) {
 		this.prevbillamt = prevbillamt;
 	}
 
 
-	public BigDecimal getPayment() {
+	public Float getPayment() {
 		return payment;
 	}
 
 
-	public void setPayment(BigDecimal payment) {
+	public void setPayment(Float payment) {
 		this.payment = payment;
 	}
 
 
-	public BigDecimal getAdjustment() {
+	public Float getAdjustment() {
 		return adjustment;
 	}
 
 
-	public void setAdjustment(BigDecimal adjustment) {
+	public void setAdjustment(Float adjustment) {
 		this.adjustment = adjustment;
 	}
 
 
-	public BigDecimal getCurrcharges() {
+	public Float getCurrcharges() {
 		return currcharges;
 	}
 
 
-	public void setCurrcharges(BigDecimal currcharges) {
+	public void setCurrcharges(Float currcharges) {
 		this.currcharges = currcharges;
 	}
 
 
-	public BigDecimal getTotalamt() {
+	public Float getTotalamt() {
 		return totalamt;
 	}
 
 
-	public void setTotalamt(BigDecimal totalamt) {
+	public void setTotalamt(Float totalamt) {
 		this.totalamt = totalamt;
 	}
 
 
-	public Instant getBilldate() {
+
+
+
+	public Date getBilldate() {
 		return billdate;
 	}
 
 
-	public void setBilldate(Instant billdate) {
+	public void setBilldate(Date billdate) {
 		this.billdate = billdate;
 	}
 
 
-	public Instant getDuedate() {
+	public Date getDuedate() {
 		return duedate;
 	}
 
 
-	public void setDuedate(Instant duedate) {
+	public void setDuedate(Date duedate) {
 		this.duedate = duedate;
 	}
 
@@ -140,18 +149,25 @@ public class Bill {
 	}
 
 
+	public Set<Receipt> getReceipts() {
+		return receipts;
+	}
+
+
+	public void setReceipts(Set<Receipt> receipts) {
+		this.receipts = receipts;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Bill [id=" + id + ", billamount=" + billamount + ", prevbillamt=" + prevbillamt + ", payment=" + payment
 				+ ", adjustment=" + adjustment + ", currcharges=" + currcharges + ", totalamt=" + totalamt
-				+ ", billdate=" + billdate + ", duedate=" + duedate + ", owner=" + owner + ", getId()=" + getId()
-				+ ", getBillamount()=" + getBillamount() + ", getPrevbillamt()=" + getPrevbillamt() + ", getPayment()="
-				+ getPayment() + ", getAdjustment()=" + getAdjustment() + ", getCurrcharges()=" + getCurrcharges()
-				+ ", getTotalamt()=" + getTotalamt() + ", getBilldate()=" + getBilldate() + ", getDuedate()="
-				+ getDuedate() + ", getOwner()=" + getOwner() + "]";
+				+ ", billdate=" + billdate + ", duedate=" + duedate + ", owner=" + owner + ", receipts=" + receipts
+				+ "]";
 	}
 
-	
+
 
 
 }
