@@ -3,12 +3,18 @@ package com.ras.soc;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +104,12 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 		if(date1.equals(date2))
 		{
 			//bill gen proc
-			Set<Bill> billset = new HashSet<Bill>();
+			Set<Bill> billset = new TreeSet<Bill>();
+				
+			
+			//Comparator<Bill> comp = new BillSort();
+			//Collections.sort(billset,comp);
+			
 			Long totalowners = ownerRepo.count();
 			List<Owner>owners = ownerRepo.findAll();
 			System.out.println(totalowners);
@@ -109,6 +120,17 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 			for(Owner o : owners)
 			{
 				billset = o.getBills();
+				Integer	maxid=0;
+				if(!billset.isEmpty())
+				{
+					for(Bill b : billset )
+					{
+							if(maxid<b.getId())
+							{
+								maxid = b.getId();
+							}
+					}
+				}
 				
 				if(billset.isEmpty())
 				{
@@ -130,18 +152,20 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 					try {
 						for(Bill b : billset )
 						{
-							Bill newBill = new Bill();
-							newBill.setPrevbillamt(b.getTotalamt());
-							newBill.setAdjustment(0.0f);
-							newBill.setCurrcharges(perMonthmtc *billFreq);
-							newBill.setBillamount(newBill.getAdjustment() + newBill.getCurrcharges() + newBill.getPrevbillamt());
-							newBill.setPayment(0.0f);
-							newBill.setTotalamt(newBill.getBillamount());
-							newBill.setDuedate(duedate);
-							newBill.setBilldate(genbill.getBillgenstart());
-							newBill.setOwner(o);
-							billRepo.save(newBill);
-							
+							if(b.getId() == maxid)
+							{
+								Bill newBill = new Bill();
+								newBill.setPrevbillamt(b.getTotalamt());
+								newBill.setAdjustment(0.0f);
+								newBill.setCurrcharges(perMonthmtc *billFreq);
+								newBill.setBillamount(newBill.getAdjustment() + newBill.getCurrcharges() + newBill.getPrevbillamt());
+								newBill.setPayment(0.0f);
+								newBill.setTotalamt(newBill.getBillamount());//billamt-payment
+								newBill.setDuedate(duedate);
+								newBill.setBilldate(genbill.getBillgenstart());
+								newBill.setOwner(o);
+								billRepo.save(newBill);
+							}
 						}
 					
 					}catch(Exception e)

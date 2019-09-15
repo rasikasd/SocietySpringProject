@@ -1,5 +1,6 @@
 package com.ras.soc.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,12 +10,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-public class Owner 
+public class Owner implements Serializable
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,7 +25,9 @@ public class Owner
 	private String lastname;
 	private String flatno;
 	
-	
+	@OneToOne(cascade =  CascadeType.ALL,
+            mappedBy = "owner")
+	private Outstanding outstanding;
 	 
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
 	private Set<Bill> bills = new HashSet<>();

@@ -56,8 +56,5 @@ public class BillController {
 			return  ResponseEntity.created(new URI("/bills/" + result.getId()))
 					.body(result);
 	}
-	
-	
-	
-	
+
 }

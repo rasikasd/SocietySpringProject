@@ -6,4 +6,6 @@ import com.ras.soc.entity.Receipt;
 
 public interface ReceiptRepository extends JpaRepository<Receipt, Integer>{
 
+	Receipt findByOwnerId(Integer id);
+	
 }

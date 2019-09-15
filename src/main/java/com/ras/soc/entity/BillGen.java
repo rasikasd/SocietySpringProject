@@ -19,12 +19,7 @@ public class BillGen {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
-
-	//@JsonFormat(pattern="yyyy-MM-dd")
 	private Date billgenstart;
-
-	//@JsonFormat(pattern="yyyy-MM-dd")
 	private Date billgenend;
 	private Integer totalgenbill;
 	public Integer getId() {

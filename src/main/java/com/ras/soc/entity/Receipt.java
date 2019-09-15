@@ -32,7 +32,7 @@ public class Receipt {
 	private String paymentdetail;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="owner_id")
 	@JsonIgnore
 	private Owner owner;
 
