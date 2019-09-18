@@ -132,6 +132,7 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 		duedate = c.getTime();
 		
 		Integer freq = genbill.getBillfreq();
+		
 		System.out.println("hi.........billfreq : "+freq+" genbill.getBillfreq"+ genbill.getBillfreq());
 		Date billend = genbill.getBillgenstart();
 		c.setTime(billend);
@@ -213,7 +214,7 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 								Bill newBill = new Bill();     // to get amount from recent bill maxid = getid
 								newBill.setPrevbillamt(b.getTotalamt());
 								newBill.setAdjustment(0.0f);
-								newBill.setCurrcharges(perMonthmtc *billFreq);
+								newBill.setCurrcharges(perMonthmtc *genbill.getBillfreq());
 								newBill.setBillamount(newBill.getAdjustment() + newBill.getCurrcharges() + newBill.getPrevbillamt());
 								newBill.setPayment(0.0f);
 								newBill.setTotalamt(newBill.getBillamount());//billamt-payment
