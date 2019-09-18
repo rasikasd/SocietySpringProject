@@ -130,6 +130,20 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 		c.setTime(duedate);
 		c.add(Calendar.DATE,15);
 		duedate = c.getTime();
+		
+		Integer freq = genbill.getBillfreq();
+		System.out.println("hi.........billfreq : "+freq+" genbill.getBillfreq"+ genbill.getBillfreq());
+		Date billend = genbill.getBillgenstart();
+		c.setTime(billend);
+		c.add(Calendar.MONTH,freq);
+		billend = c.getTime();
+		
+		c.setTime(billend);
+		c.add(Calendar.DATE, -1);
+		billend = c.getTime();
+		
+		System.out.println("hi.........billend : "+billend);
+		genbill.setBillgenend(billend);
 		String date1=sdf.format(result1); //from database end date+1
 		
 		String date2 = sdf.format(genbill.getBillgenstart()); //from android
