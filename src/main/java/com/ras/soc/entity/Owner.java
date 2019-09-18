@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,10 +30,10 @@ public class Owner implements Serializable
             mappedBy = "owner")
 	private Outstanding outstanding;
 	 
-	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Bill> bills = new HashSet<>();
 	
-	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Receipt> receipts = new HashSet<>();
 
 	public Owner() 
@@ -79,12 +80,32 @@ public class Owner implements Serializable
 	public void setBills(Set<Bill> bills) {
 		this.bills = bills;
 	}
+	
+	
+/*
+	public Outstanding getOutstanding() {
+		return outstanding;
+	}
+
+	public void setOutstanding(Outstanding outstanding) {
+		this.outstanding = outstanding;
+	}
+*/
+	public Set<Receipt> getReceipts() {
+		return receipts;
+	}
+
+	public void setReceipts(Set<Receipt> receipts) {
+		this.receipts = receipts;
+	}
 
 	@Override
 	public String toString() {
 		return "Owner [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", flatno=" + flatno
-				+ ", bills=" + bills + "]";
+				 + ", bills=" + bills + ", receipts=" + receipts + "]";
 	}
+
+	
 
 
 	

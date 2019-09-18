@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ras.soc.entity.Bill;
+import com.ras.soc.entity.Outstanding;
 import com.ras.soc.entity.Owner;
 import com.ras.soc.entity.Receipt;
 import com.ras.soc.repo.BillRepository;
+import com.ras.soc.repo.OutstandingRepository;
 import com.ras.soc.repo.OwnerRepository;
 import com.ras.soc.repo.ReceiptRepository;
 import com.ras.soc.util.CustomErrorType;
@@ -32,7 +34,7 @@ import com.ras.soc.util.ResourceNotFoundException;
 @RequestMapping("/")
 public class ReceiptController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(BillController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReceiptController.class);
 	
 	@Autowired
 	ReceiptRepository rcptRepo;
@@ -42,6 +44,9 @@ public class ReceiptController {
 	
 	@Autowired
 	BillRepository billRepo;
+	
+	@Autowired
+	OutstandingRepository outRepo;
 	
 	@GetMapping("/allreceipts")
 	public List<Receipt> getReceipts()
@@ -91,10 +96,30 @@ public class ReceiptController {
 		Receipt rec = rcptRepo.save(receipt);
 		
 		Bill bill = billRepo.getOne(billId);
-		bill.setPayment(receipt.getPaidamt());
+		bill.setPayment(bill.getPayment() + receipt.getPaidamt());
 		bill.setTotalamt(bill.getTotalamt()-receipt.getPaidamt());
 		
 		billRepo.save(bill);
+		
+		Outstanding out = outRepo.findByOwner_Id(ownerId);
+		if(out == null)
+		{
+			
+		}
+		else
+		{
+			out.setTotalpayment(out.getTotalpayment() + rec.getPaidamt());
+			out.setTotalamt(out.getTotalamt() - rec.getPaidamt());
+			outRepo.save(out);
+			if(out.getBillamount()-out.getTotalpayment() == out.getTotalamt())
+			{
+				logger.info(" outstanding is correct ...........................");
+			}
+			else
+			{
+				logger.error("unable to update outstanding of: ",out.getOwner().getLastname());
+			}
+		}
 		System.out.println("hi......");
 			return  ResponseEntity.created(new URI("/receipts/" + rec.getId()))
 					.body(rec);

@@ -1,12 +1,14 @@
 package com.ras.soc.entity;
 
 import java.time.Instant;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,12 +39,12 @@ public class Bill {
 	private Date duedate;
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	@JsonIgnore
 	private Owner owner;
 	
-	@OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "bill", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Receipt> receipts = new HashSet<>();
 
 
@@ -115,10 +117,7 @@ public class Bill {
 		this.totalamt = totalamt;
 	}
 
-
-
-
-
+	
 	public Date getBilldate() {
 		return billdate;
 	}

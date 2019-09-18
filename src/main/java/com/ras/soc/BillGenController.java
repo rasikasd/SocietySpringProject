@@ -3,6 +3,8 @@ package com.ras.soc;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -31,9 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.ras.soc.entity.Bill;
 import com.ras.soc.entity.BillGen;
+import com.ras.soc.entity.Outstanding;
 import com.ras.soc.entity.Owner;
 import com.ras.soc.repo.BillGenRepository;
 import com.ras.soc.repo.BillRepository;
+import com.ras.soc.repo.OutstandingRepository;
 import com.ras.soc.repo.OwnerRepository;
 import com.ras.soc.util.CustomErrorType;
 
@@ -51,6 +55,10 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 	
 	@Autowired
 	BillRepository billRepo;
+	
+	@Autowired
+	OutstandingRepository outRepo;
+	
 	private Float perMonthmtc=2000.0f;
 	
 	private Integer billFreq=2; 
@@ -81,6 +89,35 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 		logger.error("unable to generate bill as start date is: ",genbill.getBillgenstart());
 		return new ResponseEntity(new CustomErrorType("bill already generated for this end date  " + genbill.getBillgenstart() ),HttpStatus.CONFLICT);
 		} 
+		/*LocalDateTime result1 = billGenRepo.findMaxDate();
+		System.out.println("max date from table "+result1);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");*/
+		
+		/*Calendar c = Calendar.getInstance();
+		c.setTime(result1);
+		c.add(Calendar.DATE, 1);
+		result1 = c.getTime();
+		*/
+		
+		/*result1 = result1.plusDays(1);
+		
+		LocalDateTime duedate = genbill.getBillgenstart();*/
+		
+		/*c.setTime(duedate);
+		c.add(Calendar.DATE,15);
+		duedate = c.getTime();
+		*/
+		
+		/*duedate = duedate.plusDays(15);
+		System.out.println("ok ................");
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String date1 = result1.format(formatter);
+        String date2 = genbill.getBillgenstart().format(formatter);*/
+		//String date1=sdf.format(result1); //from database end date+1
+		
+		//String date2 = sdf.format(genbill.getBillgenstart()); //from android
+		
 		Date result1 = billGenRepo.findMaxDate();
 		System.out.println("max date from table "+result1);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -93,11 +130,9 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 		c.setTime(duedate);
 		c.add(Calendar.DATE,15);
 		duedate = c.getTime();
-		
 		String date1=sdf.format(result1); //from database end date+1
 		
 		String date2 = sdf.format(genbill.getBillgenstart()); //from android
-		
 		System.out.println("andr start date "+date1);
 		
 		System.out.println(" query +1 : "+date2);
@@ -134,6 +169,8 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 				
 				if(billset.isEmpty())
 				{
+					Outstanding outs = new Outstanding();
+					outs.setOwner(o);
 					Bill newBill = new Bill();
 					newBill.setAdjustment(0.0f);
 					newBill.setPrevbillamt(0.0f);
@@ -144,7 +181,12 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 					newBill.setBilldate(genbill.getBillgenstart());
 					newBill.setTotalamt(newBill.getBillamount());
 					newBill.setOwner(o);
-					billRepo.save(newBill);
+					Bill savedBill =billRepo.save(newBill);
+					outs.setBill_id(savedBill.getId());
+					outs.setBillamount(savedBill.getTotalamt());
+					outs.setTotalpayment(0.0f);
+					outs.setTotalamt(savedBill.getTotalamt());
+					outRepo.save(outs);
 					
 				}
 				else {
@@ -154,7 +196,7 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 						{
 							if(b.getId() == maxid)
 							{
-								Bill newBill = new Bill();
+								Bill newBill = new Bill();     // to get amount from recent bill maxid = getid
 								newBill.setPrevbillamt(b.getTotalamt());
 								newBill.setAdjustment(0.0f);
 								newBill.setCurrcharges(perMonthmtc *billFreq);
@@ -164,7 +206,15 @@ private static final Logger logger = LoggerFactory.getLogger(BillGenController.c
 								newBill.setDuedate(duedate);
 								newBill.setBilldate(genbill.getBillgenstart());
 								newBill.setOwner(o);
-								billRepo.save(newBill);
+								Bill savedBill = billRepo.save(newBill);
+								Outstanding outs = new Outstanding();
+								outs = outRepo.findByOwner_Id(o.getId());
+								outs.setBill_id(savedBill.getId());
+								outs.setBillamount(savedBill.getTotalamt());
+								outs.setTotalpayment(0.0f);
+								outs.setTotalamt(savedBill.getTotalamt());
+								outRepo.save(outs);
+								
 							}
 						}
 					

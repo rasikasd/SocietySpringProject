@@ -1,6 +1,7 @@
 package com.ras.soc.entity;
 
 import java.time.Instant;
+
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -28,7 +29,6 @@ public class BillGen {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
 	
 	public Date getBillgenstart() {
 		return billgenstart;

@@ -1,12 +1,14 @@
 package com.ras.soc.entity;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,18 +27,18 @@ public class Receipt {
 	
 	private Float paidamt;
 	
+	//private LocalDateTime rcptdate;
 	private Date rcptdate;
-	
 	private String paymenttype;
 	
 	private String paymentdetail;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="owner_id")
 	@JsonIgnore
 	private Owner owner;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	@JsonIgnore
 	private Bill bill;
@@ -56,7 +58,7 @@ public class Receipt {
 	public void setPaidamt(Float paidamt) {
 		this.paidamt = paidamt;
 	}
-
+	
 	public Date getRcptdate() {
 		return rcptdate;
 	}
@@ -103,7 +105,6 @@ public class Receipt {
 				+ ", paymentdetail=" + paymentdetail + ", owner=" + owner + ", bill=" + bill + "]";
 	}
 
-	
 	
 	
 }

@@ -3,6 +3,7 @@ package com.ras.soc.entity;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +24,7 @@ public class Outstanding {
 	private Float totalpayment;
 	private Float totalamt;
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	@JsonIgnore
 	private Owner owner;
