@@ -81,33 +81,39 @@ public class ReceiptController {
 				})
 				.orElseThrow(() -> new ResourceNotFoundException("ownerId " + ownerId + " not found"));
 		*/
+		
 		ownerRepo.findById(ownerId)
 		.map(owner -> {
 						receipt.setOwner(owner);
 						return 1;
 		}).orElseThrow(() -> new ResourceNotFoundException("ownerId " + ownerId + " not found"));
 		
-		billRepo.findById(billId)
+		Outstanding out = outRepo.findByOwner_Id(ownerId);
+		
+		
+		billRepo.findById(out.getBill_id())
 		.map(bill -> {
 						receipt.setBill(bill);
 						return 1;
 		}).orElseThrow(() -> new ResourceNotFoundException("billId " + billId + " not found"));
 		
-		Receipt rec = rcptRepo.save(receipt);
 		
-		Bill bill = billRepo.getOne(billId);
+		
+		Bill bill = billRepo.getOne(out.getBill_id());
 		bill.setPayment(bill.getPayment() + receipt.getPaidamt());
 		bill.setTotalamt(bill.getTotalamt()-receipt.getPaidamt());
 		
-		billRepo.save(bill);
 		
-		Outstanding out = outRepo.findByOwner_Id(ownerId);
 		if(out == null)
 		{
-			
+		
+			logger.error("no outstanding found for owner ");
+			return ResponseEntity.notFound().build();
 		}
 		else
 		{
+			Receipt rec = rcptRepo.save(receipt);
+			billRepo.save(bill);
 			out.setTotalpayment(out.getTotalpayment() + rec.getPaidamt());
 			out.setTotalamt(out.getTotalamt() - rec.getPaidamt());
 			outRepo.save(out);
@@ -119,9 +125,10 @@ public class ReceiptController {
 			{
 				logger.error("unable to update outstanding of: ",out.getOwner().getLastname());
 			}
-		}
-		System.out.println("hi......");
+			System.out.println("hi......");
 			return  ResponseEntity.created(new URI("/receipts/" + rec.getId()))
 					.body(rec);
+		}
+
 	}
 }

@@ -32,12 +32,12 @@ public class Owner implements Serializable
             mappedBy = "owner")
 	private Outstanding outstanding;
 	 
-	@OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Set<Bill> bills = new HashSet<>();
 	
 	
-	@OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Set<Receipt> receipts = new HashSet<>();
 
